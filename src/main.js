@@ -26,7 +26,8 @@ import goodslist from './components/admin/goods/goodslist.vue';
 //导入orderlist.vue
 import orderlist from './components/admin/order/orderlist.vue';
 import orderedit from './components/admin/order/orderedit.vue';
-import goodsedit from './components/admin/goods/goodsedit.vue'
+import goodsedit from './components/admin/goods/goodsedit.vue';
+import goodsadd from './components/admin/goods/goodsadd.vue'
 var router = new vueRouter({
     routes: [
         { name: 'default', path: '/', redirect: '/admin' },
@@ -41,6 +42,7 @@ var router = new vueRouter({
                 { name: 'orderlist', path: 'orderlist', component: orderlist },
                 { name: 'orderedit', path: 'orderedit/:id', component: orderedit },
                 { name: 'goodsedit', path: 'goodsedit/:id', component: goodsedit },
+                { name: 'goodsadd', path: 'goodsadd', component: goodsadd },
             ]
         }
     ]
