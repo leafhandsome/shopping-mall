@@ -13,8 +13,10 @@
                             <el-menu-item-group>    
                             <router-link to="/admin/goodslist">                    
                              <el-menu-item index="1-1">内容管理</el-menu-item>
-                            </router-link>   
+                            </router-link>  
+                            <!-- <router-link to="/admin/goodscatelist">  -->
                             <el-menu-item index="1-2">类别管理</el-menu-item>
+                            <!-- </router-link> -->
                             <el-menu-item index="1-3">评论管理</el-menu-item>
                             </el-menu-item-group>
                         </el-submenu>
@@ -22,8 +24,10 @@
                         <!-- 订单管理 -->
                         <el-submenu index="2">
                                 <template slot="title"><i class="el-icon-message"></i>订单管理</template>
-                                <el-menu-item-group>                           
-                                <el-menu-item index="2-1">订单列表</el-menu-item>                               
+                                <el-menu-item-group>   
+                                    <router-link to="/admin/orderlist">
+                                <el-menu-item index="2-1">订单列表</el-menu-item>  
+                                </router-link>
                                 </el-menu-item-group>
                             </el-submenu>
                     </el-menu>

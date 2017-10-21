@@ -36,66 +36,96 @@
                     <el-table-column prop="title" label="标题">
                     </el-table-column>
                     <el-table-column prop="categoryname" label="类别" width="100">
-                        </el-table-column>
-                    <el-table-column label="发布人/发布时间"  width="150">
+                    </el-table-column>
+                    <el-table-column label="发布人/发布时间" width="200">
                         <template scope="scope">
-                            {{scope.row.user_name }}  / {{scope.row.add_time}}
+                            {{scope.row.user_name }} / {{scope.row.add_time}}
                         </template>
                     </el-table-column>
                     <el-table-column prop="name" label="属性" width="100">
-                        </el-table-column>
-                        <el-table-column label="操作" width="80">
-                    <template scope="scope">
-                            <a href="#">修改</a>
+                    </el-table-column>
+                    <el-table-column label="操作" width="80">
+                        <template scope="scope">
+                            <a v-bind='{href:"./#/admin/goodsedit/"+id}'>修改</a>
                         </template>
-                        </el-table-column>
+                    </el-table-column>
                 </el-table>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col>
+                <div class="block">
+                    <!-- <span class="demonstration">完整功能</span> -->
+                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                     :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100"
+                      layout="total, sizes, prev, pager, next, jumper" :total="total">
+                    </el-pagination>
+                </div>
             </el-col>
         </el-row>
     </div>
 </template>
 
+ 
 <script>
-    export default {
-        data() {
-            return {
-                // 搜索框的绑定属性
-                searchValue: '',
-                // 表格中的每行数据来源于list，而这个list将来是通过getlist()方法请求后台api接口获取到的
-                list: []
-            }
-        },
-        created(){
-            // 获取到列表数据
-            this.getlist();
-        },
-        methods: {
-            // 用axios去发出具体的url的请求获取到数据后绑定到表格中
-            getlist() {
-                // 1.0 获取url
-                var url  ='/admin/goods/getlist?pageIndex=1&pageSize=10&searchvalue=';
-                this.$http.get(url).then(res=>{
-                    // 判断服务器返回的状态status
-                    if(res.data.status == 1){
-                        this.$message.error(res.data.message);
-                        return;
-                    }
 
-                    // 正常逻辑的处理
-                    this.list = res.data.message;
-                });
-            },
-            // 控制表格的隔行变色
-            tableRowClassName(row, index) {
-            //    控制奇数和偶数行的颜色
-                if(index % 2 == 0){
-                    return 'info-row';
-                }else{
-                    return 'positive-row';
-                }
-            }
+export default {
+    data() {
+        return {
+            // 搜索框的绑定属性
+            searchValue: '',
+            // 表格中的每行数据来源于list，而这个list将来是通过getlist()方法请求后台api接口获取到的
+            list: [],
+            id:0,
+            currentPage1: 5,
+        currentPage2: 5,
+        currentPage3: 5,
+        currentPage4: 4,
+        total:0
         }
+    },
+    created() {
+        // 获取到列表数据
+        this.getlist();
+    },
+
+    methods: {
+        // 用axios去发出具体的url的请求获取到数据后绑定到表格中
+        getlist() {
+            // 1.0 获取url
+            var url = '/admin/goods/getlist?pageIndex=1&pageSize=8&searchvalue=';
+            this.$http.get(url + this.searchValue).then(res => {
+                // 判断服务器返回的状态status
+                if (res.data.status == 1) {
+                    this.$message.error(res.data.message);
+                    return;
+                }
+
+                // 正常逻辑的处理
+                this.total=res.data.totalcount;
+                this.list = res.data.message;
+            });
+        },
+        // 控制表格的隔行变色
+        tableRowClassName(row, index) {
+            //    控制奇数和偶数行的颜色
+            if (index % 2 == 0) {
+                return 'info-row';
+            } else {
+                return 'positive-row';
+            }
+        },
+        //页码
+          handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+      }
     }
+
+}
 </script>
 <style scoped>
+
 </style>

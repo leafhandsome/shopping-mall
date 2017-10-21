@@ -28,7 +28,7 @@ export default{
     // es6的写法 data() 等同于es5的 data:function()
     data(){
         return{
-            name:'heima'
+            name:'admin'
         }
     },methods:{
 

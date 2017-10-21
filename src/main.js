@@ -1,4 +1,3 @@
-
 // 步骤1：导入 vue这个包
 // var Vue = require('vue');
 import Vue from 'vue';
@@ -22,16 +21,28 @@ import login from './components/admin/account/login.vue';
 import layout from './components/admin/layout.vue';
 // 导入goodslist.vue
 import goodslist from './components/admin/goods/goodslist.vue';
-
+//导入goodscatelist.vue
+// import goodscatelist from './components/admin/goods/goodscatelist.vue';
+//导入orderlist.vue
+import orderlist from './components/admin/order/orderlist.vue';
+import orderedit from './components/admin/order/orderedit.vue';
+import goodsedit from './components/admin/goods/goodsedit.vue'
 var router = new vueRouter({
-    routes:[
-        {name:'default',path:'/',redirect:'/admin'},
-        {name:'login',path:'/login',component:login},
-        {name:'layout',path:'/admin',component:layout,
-    children:[
-        {name:'goodslist',path:'goodslist',component:goodslist}
-    ]
-}
+    routes: [
+        { name: 'default', path: '/', redirect: '/admin' },
+        { name: 'login', path: '/login', component: login },
+        {
+            name: 'layout',
+            path: '/admin',
+            component: layout,
+            children: [
+                { name: 'goodslist', path: 'goodslist', component: goodslist },
+                // { name: 'goodscatelist', path: 'goodscatelist', component: goodscatelist },
+                { name: 'orderlist', path: 'orderlist', component: orderlist },
+                { name: 'orderedit', path: 'orderedit/:id', component: orderedit },
+                { name: 'goodsedit', path: 'goodsedit/:id', component: goodsedit },
+            ]
+        }
     ]
 });
 
@@ -51,7 +62,7 @@ Vue.use(axios);
 
 // 3.0 使用elementUI这个ui框架的步骤
 // 3.0.1、导包
-import elementUI  from 'element-ui';
+import elementUI from 'element-ui';
 // 3.0.2 导入elemeui的css控制样式
 // 由于项目的样式和elementui的css样式有些不一样，那么修改了这个样式以后，要利用自己的样式替换原来的原有样式
 
@@ -65,11 +76,11 @@ import '../statics/css/site.css';
 Vue.use(elementUI);
 
 new Vue({
-    el:'#app',
+    el: '#app',
     // 使用app这个组件对象
     // es5的写法
     // render:function(create){create(App);}
     router,
     // es6的写法 :将app当做根组件替换index1.html这个模板中的<div id="app">
-    render:create=>create(App)
+    render: create => create(App)
 });
