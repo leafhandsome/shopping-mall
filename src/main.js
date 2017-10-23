@@ -27,7 +27,8 @@ import goodslist from './components/admin/goods/goodslist.vue';
 import orderlist from './components/admin/order/orderlist.vue';
 import orderedit from './components/admin/order/orderedit.vue';
 import goodsedit from './components/admin/goods/goodsedit.vue';
-import goodsadd from './components/admin/goods/goodsadd.vue'
+import goodsadd from './components/admin/goods/goodsadd.vue';
+
 var router = new vueRouter({
     routes: [
         { name: 'default', path: '/', redirect: '/admin' },
@@ -54,16 +55,29 @@ var router = new vueRouter({
 import axios from 'axios';
 // 2.0.2 设定axios的基本的url请求前缀
 axios.defaults.baseURL = 'http://157.122.54.189:9095';
-
+//设置浏览器带上cookie
+axios.defaults.withCredentials = true;
 // 2.0.3 想要在将来的每个子组件中的方法中均可以使用 this.$http去调用其方法执行ajax请求
 //就要将axios对象挂载到vue的原型属性$http上
 Vue.prototype.$http = axios;
 
 // 2.0.4 绑定到vue上
 Vue.use(axios);
-
-// 3.0 使用elementUI这个ui框架的步骤
-// 3.0.1、导包
+router.beforeEach((to, from, next) => {
+        if (to.name == "login") {
+            next()
+        } else {
+            axios.get("/admin/account/islogin").then(res => {
+                if (res.data.code == "logined") {
+                    next()
+                } else {
+                    router.push({ name: 'login' })
+                }
+            })
+        }
+    })
+    // 3.0 使用elementUI这个ui框架的步骤
+    // 3.0.1、导包
 import elementUI from 'element-ui';
 // 3.0.2 导入elemeui的css控制样式
 // 由于项目的样式和elementui的css样式有些不一样，那么修改了这个样式以后，要利用自己的样式替换原来的原有样式
@@ -76,8 +90,25 @@ import '../statics/css/site.css';
 
 // 3.0.3 绑定
 Vue.use(elementUI);
+Vue.filter('datefmt', (input, fmtstring) => {
+    var mydate = new Date(input);
+    var y = mydate.getFullYear();
+    var m = mydate.getMonth() + 1;
+    var d = mydate.getDate();
+    var h = mydate.getHours();
+    var mi = mydate.getMinutes();
+    var s = mydate.getSeconds();
 
+    if (fmtstring == 'YYYY-MM-DD') {
+        return y + '-' + m + '-' + d;
+    }
+    if (fmtstring == 'YYYY-MM-DD HH:mm:ss') {
+        return y + '-' + m + '-' + d + ' ' + h + ':' + mi + ':' + s;
+    }
+
+});
 new Vue({
+
     el: '#app',
     // 使用app这个组件对象
     // es5的写法

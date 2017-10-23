@@ -16,11 +16,11 @@
             <el-row>
                 <el-col :span="5">
                     <!-- 新增，删除，全选按钮 -->
-                    <el-button >全选</el-button>
+                    <el-button @click="selectall">全选</el-button>
                     <router-link to="/admin/goodsadd">
                         <el-button>新增</el-button>
                     </router-link>
-                    <el-button>删除</el-button>
+                    <el-button @click='deldata'>删除</el-button>
                 </el-col>
                 <el-col :span="3" :offset="16">
                     <!-- 搜索框 -->
@@ -32,7 +32,7 @@
 
         <el-row>
             <el-col :span="24">
-                <el-table :data="list" style="width: 100%" :row-class-name="tableRowClassName" @selection-change="getrows">
+                <el-table :data="list" style="width: 100%" ref="multipleTable" :row-class-name="tableRowClassName" @selection-change="getrows">
                     <el-table-column type='selection' width="80">
                     </el-table-column>
                     <el-table-column prop="title" label="标题">
@@ -47,23 +47,23 @@
                     </el-table-column>
                     <el-table-column label="发布人/发布时间" width="200">
                         <template scope="scope">
-                            {{scope.row.user_name }} / {{scope.row.add_time}}
+                            {{scope.row.user_name }} / {{scope.row.add_time|datefmt("YYYY-MM-DD")}}
                         </template>
                     </el-table-column>
                     <el-table-column prop="name" label="属性" width="180">
                         <template scope="scope">
-                           
-                             <el-tooltip class="item" effect="dark" v-bind='{content:(scope.row.is_slide==1?"轮播":"不轮播")}' placement="bottom">
-                               <i v-bind='{class:"el-icon-picture ls"+(scope.row.is_slide==1?"imgactive":"")}'></i>
+
+                            <el-tooltip class="item" effect="dark" v-bind='{content:(scope.row.is_slide==1?"轮播":"不轮播")}' placement="bottom">
+                                <i v-bind='{class:"el-icon-picture ls"+(scope.row.is_slide==1?"imgactive":"")}'></i>
                             </el-tooltip>
-                           
+
                             <el-tooltip class="item" effect="dark" v-bind="{content:(scope.row.is_top==1?'置顶':'不置顶')}" placement="bottom">
                                 <i v-bind="{class:'el-icon-upload ls'+(scope.row.is_top==1?'imgactive':'')}"></i>
                             </el-tooltip>
                             <el-tooltip class="item" effect="dark" v-bind='{content:(scope.row.is_hot==1? "热门":"非热门")}' placement="bottom">
-                               <i v-bind='{class:"el-icon-star-on ls"+(scope.row.is_hot==1? "imgactive":"")}'></i>
+                                <i v-bind='{class:"el-icon-star-on ls"+(scope.row.is_hot==1? "imgactive":"")}'></i>
                             </el-tooltip>
-                           
+
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" width="80">
@@ -82,7 +82,7 @@
             <el-col>
                 <div class="block">
                     <!-- <span class="demonstration">完整功能</span> -->
-                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[10, 20, 30, 50,100,200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage1" :page-sizes="[10, 20, 30, 50,100,200]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
                     </el-pagination>
                 </div>
             </el-col>
@@ -92,6 +92,7 @@
 
 
 <script>
+
 export default {
     data() {
         return {
@@ -104,7 +105,7 @@ export default {
             pagesize: 10,
             pageindex: 1,
 
-            currentPage4: 4,
+            currentPage1: 1,
             total: 0
         }
     },
@@ -114,6 +115,36 @@ export default {
     },
 
     methods: {
+        selectall(){
+                var rows=this.list;
+                if(rows){
+                    rows.forEach((row)=> {
+                       this.$refs.multipleTable.toggleRowSelection(row);
+                });
+                }else{
+                     this.$refs.multipleTable.clearSelection();
+                }
+        },
+        deldata(){
+            if(this.ids.length<=0){
+                this.$message.error('请勾选你要删除的数据');
+                return;
+            }
+             this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'  }).then(() => {
+          this.$http.get('/admin/goods/del/'+this.ids).then(res=>{
+                if(res.data.status==1){
+                    this.$message.error(res.data.message)
+                }
+                this.getlist()
+          })   
+          }).catch(()=>{
+
+          });
+            
+        },
         // 用axios去发出具体的url的请求获取到数据后绑定到表格中
         getlist() {
             // 1.0 获取url

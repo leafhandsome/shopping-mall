@@ -76,6 +76,7 @@
 <script>
     export default {
         //过滤器
+
         data() {
             return {
                 // 这个属性主要是用来控制el-menu菜单的展开和收缩的

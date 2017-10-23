@@ -5,7 +5,7 @@
         <div class="abread bt-line">
           <!-- //面包屑 -->
           <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/admin/orderlist' }">返回上一层 </el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/admin' }">返回上一层 </el-breadcrumb-item>
             <el-breadcrumb-item>购物商城</el-breadcrumb-item>
             <el-breadcrumb-item>首页</el-breadcrumb-item>
             <el-breadcrumb-item>编辑商品</el-breadcrumb-item>
@@ -40,38 +40,26 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <!-- <el-col >
-              <el-form-item label="所属类别" prop="category_id">
-                <el-select v-model="ruleForm.category_id" placeholder="请选择">
-                   <el-option v-for="(cate,index) in categorylist" :key="index" :label="cate.title" :value="cate.category_id">
-                    <span v-for="(cunt,index) in (cate.class_layey-1)" :key="index">&nbsp;</span>
-                    <span v-if="cate.class_layer>1">|-</span>
-                    <span v-html="cate.title"></span>
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col> -->
         <el-col :span="5">
           <el-form-item label="是否发布">
-            <el-switch :width="80" v-model="value1" on-text="发布" off-text="不发布">
+            <el-switch :width="80" v-model="ruleForm.is_status" on-text="发布" off-text="不发布">
             </el-switch>
           </el-form-item>
 
         </el-col>
         <el-col :span="11">
           <el-form-item label="推荐类型">
-            <el-switch :width="80" v-model="value2" on-text="轮播" off-text="不轮播">
+            <el-switch :width="80" v-model="ruleForm.is_slide" on-text="轮播" off-text="不轮播">
             </el-switch>
-            <el-switch :width="80" v-model="value3" on-text="置顶" off-text="不置顶">
+            <el-switch :width="80" v-model="ruleForm.is_top" on-text="置顶" off-text="不置顶">
             </el-switch>
-            <el-switch :width="80" v-model="value4" on-text="热门" off-text="非热门">
+            <el-switch :width="80" v-model="ruleForm.is_hot" on-text="热门" off-text="非热门">
             </el-switch>
           </el-form-item>
 
         </el-col>
       </el-row>
-      <!-- 上传图片 -->
-
+   
       <!-- 数量 -->
       <el-row>
         <el-col :span="5">
@@ -96,17 +84,18 @@
         </el-col>
 
       </el-row>
+
       <!-- 摘要 -->
       <el-row>
         <el-col :span="20">
-          <el-form-item label="内容摘要" prop="desc">
-            <el-input type="textarea" v-model="ruleForm.desc"></el-input>
+          <el-form-item label="内容摘要" prop="zhaiyao">
+            <el-input type="textarea" v-model="ruleForm.zhaiyao"></el-input>
           </el-form-item>
         </el-col>
 
       </el-row>
       <!-- 详情 -->
-      <el-row>
+      <el-row :height="400">
         <el-col :span="20">
           <el-form-item label="详细描述">
             <quill-editor v-model="ruleForm.content"></quill-editor>
@@ -114,7 +103,7 @@
         </el-col>
       </el-row>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -131,6 +120,7 @@
             quillEditor
         },
         data() {
+
             var checkNumber = (rule, value, callback) => {
                 // 非空验证
                 if (!value) {
@@ -143,21 +133,23 @@
                 }
             };
             return {
-                value1: true,
-                value2: true,
-                value3: true,
-                value4: true,
                 categorylist: [],
                 ruleForm: {
                     title: '',
                     sub_title: '',
                     category_id: '',
-                    desc: '',
-                    content: '',
+                    status: true,
+                    is_slide: true,
+                    is_top: true,
+                    is_hot: true,
                     goods_no: '',
-                    market_price: 0,
                     stock_quantity: 0,
+                    market_price: 0,
                     sell_price: 0,
+                    zhaiyao: "",
+                    content: '',
+                    imgList: [],
+                    fileList: []
                 },
                 rules: {
                     title: [{
@@ -170,7 +162,16 @@
                         message: '请商品号',
                         trigger: 'blur'
                     }],
+                    stock_quantity: [{
+                        validator: checkNumber,
+                        trigger: 'blur'
+                    }],
+
                     market_price: [{
+                        validator: checkNumber,
+                        trigger: 'blur'
+                    }],
+                    sell_price: [{
                         validator: checkNumber,
                         trigger: 'blur'
                     }]
@@ -181,7 +182,16 @@
             this.category();
         },
         methods: {
+            // 上传图片
 
+            imguploaded(response, file, fileList) {
+                console.log(response);
+
+                this.ruleForm.imgList = [response]
+            },
+            fileuploaded(response, file, fileList) {
+                this.ruleForm.fileList.push(response)
+            },
             //所属类别
             category() {
                 this.$http.get('/admin/category/getlist/goods').then(res => {
@@ -196,14 +206,16 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         //发送ajax请求
-                        this.$http.post('/admin/goods/add/goods').then(res => {
+                        console.log(this.ruleForm);
+
+                        this.$http.post('/admin/goods/add/goods', this.ruleForm).then(res => {
                             if (res.data.status == 1) {
-                                this.$message.error(res.data.message)
+                                this.$message.error("请求失败")
                                 return;
                             }
                             this.$router.push({
                                 name: 'goodslist'
-                            })
+                            });
                         })
                     } else {
                         console.log('error submit!!');
