@@ -59,7 +59,7 @@
                                 return;
                             }
                             this.$router.push({
-                                name: "layout"
+                                name: "goodslist"
                             })
                         })
                     } else {

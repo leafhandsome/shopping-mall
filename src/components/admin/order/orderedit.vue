@@ -19,29 +19,29 @@
       <el-row>
         <el-col :span="10" offset="1">
           <div style="margin: 20px;"></div>
-          <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
-            <el-form-item label="订单号">
-              BD2017101591148893
-            </el-form-item>
-            <el-form-item label="收件人">
-              <el-input v-model="formLabelAlign.name"></el-input>
-            </el-form-item>
-            <el-form-item label="发货地区">
-              <el-input v-model="formLabelAlign.region"></el-input>
-            </el-form-item>
-            <el-form-item label="手机">
-              <el-input v-model="formLabelAlign.type"></el-input>
-            </el-form-item>
-            <el-form-item label="邮箱">
-              <el-input v-model="formLabelAlign.type"></el-input>
-            </el-form-item>
-            <el-form-item label="总金额">
-              <el-input v-model="formLabelAlign.type"></el-input>
-            </el-form-item>
-          </el-form>
+
+          <el-form-item label="订单号">
+          123456
+          </el-form-item>
+          <el-form-item label="收件人">
+            <el-input v-model="form.name"></el-input>
+          </el-form-item>
+          <el-form-item label="发货地区">
+            <el-input v-model="form.region"></el-input>
+          </el-form-item>
+          <el-form-item label="手机">
+            <el-input v-model="form.type"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱">
+            <el-input v-model="form.type"></el-input>
+          </el-form-item>
+          <el-form-item label="总金额">
+            <el-input v-model="form.type"></el-input>
+          </el-form-item>
+
         </el-col>
         <div style="margin: 20px;"></div>
-        <el-col :span="10" offset="1">
+        <el-col :span="10">
           <el-form-item label="订单状态">
             <el-select v-model="form.region" placeholder="已发货待签收">
               <el-option label="待付款" value="shanghai"></el-option>
@@ -52,23 +52,23 @@
             </el-select>
           </el-form-item>
           <div style="margin: 20px;"></div>
-          <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
-            <el-form-item label="物流单号">
-              <el-input v-model="formLabelAlign.name"></el-input>
-            </el-form-item>
-            <el-form-item label="详细地址">
-              <el-input v-model="formLabelAlign.region"></el-input>
-            </el-form-item>
-            <el-form-item label="电话">
-              <el-input v-model="formLabelAlign.type"></el-input>
-            </el-form-item>
-            <el-form-item label="订单留言">
-              <el-input v-model="formLabelAlign.type"></el-input>
-            </el-form-item>
-            <el-form-item label="配送费">
-              <el-input v-model="formLabelAlign.type"></el-input>
-            </el-form-item>
-          </el-form>
+
+          <el-form-item label="物流单号">
+            <el-input v-model="form.name"></el-input>
+          </el-form-item>
+          <el-form-item label="详细地址">
+            <el-input v-model="form.address"></el-input>
+          </el-form-item>
+          <el-form-item label="电话">
+            <el-input v-model="form.type"></el-input>
+          </el-form-item>
+          <el-form-item label="订单留言">
+            <el-input v-model="form.message"></el-input>
+          </el-form-item>
+          <el-form-item label="配送费">
+            <el-input v-model="form.type"></el-input>
+          </el-form-item>
+
         </el-col>
       </el-row>
       <el-row>
@@ -99,6 +99,8 @@ export default {
   data() {
     return {
       form: {
+        order_no:"BD20171007134225417",
+
         name: '',
         region: '',
         date1: '',
@@ -110,14 +112,11 @@ export default {
 
       },
       labelPosition: 'right',
-      formLabelAlign: {
-        name: '',
-        region: '',
-        type: ''
-      }
     }
   },
   methods: {
+    //数据回显
+
     onSubmit() {
       console.log('submit!');
     }
